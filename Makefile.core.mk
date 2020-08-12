@@ -16,7 +16,7 @@ TOP := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 SHELL := /bin/bash
 BAZEL_STARTUP_ARGS ?=
-BAZEL_BUILD_ARGS ?=
+BAZEL_BUILD_ARGS ?= -c dbg --copt=-fno-limit-debug-info
 BAZEL_TARGETS ?= //...
 # Don't build Debian packages and Docker images in tests.
 BAZEL_TEST_TARGETS ?= ${BAZEL_TARGETS} -tools/deb/... -tools/docker/...
@@ -55,7 +55,7 @@ BAZEL_OUTPUT_PATH = $(shell bazel info $(BAZEL_BUILD_ARGS) output_path)
 BAZEL_ENVOY_PATH ?= $(BAZEL_OUTPUT_PATH)/k8-fastbuild/bin/src/envoy/envoy
 
 build:
-	export PATH=$(PATH) CC=$(CC) CXX=$(CXX) && bazel $(BAZEL_STARTUP_ARGS) build $(BAZEL_BUILD_ARGS) $(BAZEL_CONFIG_DEV) $(BAZEL_TARGETS)
+	export PATH=$(PATH) CC=$(CC) CXX=$(CXX) && bazel $(BAZEL_STARTUP_ARGS) build $(BAZEL_BUILD_ARGS) $(BAZEL_CONFIG_DEV) //src/envoy:envoy
 
 build_envoy:
 	export PATH=$(PATH) CC=$(CC) CXX=$(CXX) && bazel $(BAZEL_STARTUP_ARGS) build $(BAZEL_BUILD_ARGS) $(BAZEL_CONFIG_REL) //src/envoy:envoy

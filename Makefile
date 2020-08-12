@@ -26,7 +26,7 @@
 # to build the repo. The only dependencies in this mode are to have make and
 # docker. If you'd rather build with a local tool chain instead, you'll need to
 # figure out all the tools you need in your environment to make that work.
-export BUILD_WITH_CONTAINER ?= 0
+export BUILD_WITH_CONTAINE
 
 LOCAL_ARCH := $(shell uname -m)
 ifeq ($(LOCAL_ARCH),x86_64)
@@ -60,7 +60,7 @@ export TARGET_OUT = /work/out/$(TARGET_OS)_$(TARGET_ARCH)
 export TARGET_OUT_LINUX = /work/out/linux_amd64
 CONTAINER_CLI ?= docker
 DOCKER_SOCKET_MOUNT ?= -v /var/run/docker.sock:/var/run/docker.sock
-IMG ?= gcr.io/istio-testing/build-tools:release-1.5-2020-05-11T22-26-45
+IMG ?= gcr.io/istio-testing/build-tools-proxy:release-1.5-2020-05-11T22-26-45
 UID = $(shell id -u)
 GID = `grep docker /etc/group | cut -f3 -d:`
 PWD = $(shell pwd)
@@ -75,7 +75,7 @@ TIMEZONE=`readlink $(READLINK_FLAGS) /etc/localtime | sed -e 's/^.*zoneinfo\///'
 # Determine the docker.push credential bind mounts.
 # Docker and GCR are supported credentials. At this time docker.push may
 # not work well on Docker-For-Mac. This will be handled in a follow-up PR.
-CONDITIONAL_HOST_MOUNTS:=
+CONDITIONAL_HOST_MOUNTS:=--mount type=bind,source="$(HOME)/.cache",destination="/home/.cache"
 
 ifneq (,$(wildcard $(HOME)/.docker))
 $(info Using docker credential directory $(HOME)/.docker.)
